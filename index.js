@@ -1,45 +1,63 @@
-const express = require("express");
+const express = require('express');
 const app = express();
-const path = require("path");
-
+const moment = require("moment")
 const PORT = process.env.PORT || 5000;
+const fs = require("fs");
 
-app.get("/", (req, res) => {
-    res.send("<h1>Hello Code Guys!</h1>");
-    console.log(res);
-})
+app.use(express.json())
 
-const products = [
-    {
-        name: "Phone",
-        price: 200,
-        image: "https://wriiii.jpg"
-    },
-    {
-        name: "Tablet",
-        price: 150,
-        image: "https://abciiii.jpg"
-    }
-]
+// Model
+const Users = require("./models/Users")
 
+// function sayHello(req, res, next) {
+//     const time = `Time: ${(moment().format('MMMM Do YYYY, h:mm:ss a'))}`;
+//     console.log("Hello");
+//     fs.writeFileSync("week3", time)
+//     next();
+// }
 
-app.get("/file", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"))
-})
+// const loggedMiddleware = function(req, res, next) {
+//     const time = `Time: ${(moment().format('MMMM Do YYYY, h:mm:ss a'))}`;
+//     const path = req.path;
+//     console.log(`Log: ${time} - ${path}`)
+//     next()
 
-// Handle JSON
-app.get("/products", (req, res) => {
-    res.status(200).json(products);
-})
+// }
 
-// Handle 404 wildcard
-app.get("*", (req, res) => {
-    res.status(404).sendFile(path.join(__dirname, "public", "error.html"))
-})
+// const isLoggedIn = (req, res, next) => {
+//     const {login} = req.query
+//     if (login === "true") {
+//         next()
+//     } else {
+//         console.log("<h1>no logged in user</h1>")
+//         next()
+//     }
+// }
 
-// Middleware
-// app.use((req, res, next) => {
-// res.status(404).sendFile(path.join(__dirname, "public", "error.html"))
+// const computation = (req, res, next) => {
+//     req.comp = 2 + 2;
+//     next();
+// }
+
+// // App-level Middleware
+// // app.use(sayHello);
+// // app.use(loggedMiddleware)
+
+// app.get("/", (req, res) => {
+//     res.send('<h1>Hello</h1>')
 // })
 
-app.listen(PORT, () => console.log(`Server started on port http://127.0.0.1:${PORT}`))
+// app.get("/protected", [isLoggedIn, loggedMiddleware], (req, res) => {
+//     res.send(`<h1>This is a protected file.</h1>`)
+// })
+
+// app.get("/protected/comp", [isLoggedIn, loggedMiddleware, computation], (req, res) => {
+//     res.json(req.comp)
+// })
+
+app.post("/users", (req, res) => {
+    Users.push(req.body);
+    res.json(Users);
+})
+
+app.listen(PORT, () => console.log(`Listening on port ${PORT}...`))
